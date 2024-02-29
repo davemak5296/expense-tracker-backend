@@ -10,7 +10,7 @@ public interface UserService {
 
     User register(UserDTO userDTO) throws ParseException;
 
-    Optional<UserDTO> findUserById(Long id);
+    UserDTO findUserById(Long id);
 
     UserDTO convertToDTO(User user);
 

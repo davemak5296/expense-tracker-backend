@@ -29,7 +29,7 @@ public class UserController {
 
     @GetMapping("/user/{id}")
     @ResponseBody
-    public Optional<UserDTO> getUserById(@PathVariable Long id) {
+    public UserDTO getUserById(@PathVariable Long id) {
         return userService.findUserById(id);
     }
 

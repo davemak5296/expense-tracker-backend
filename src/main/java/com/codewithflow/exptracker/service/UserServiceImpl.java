@@ -8,7 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -30,9 +29,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<UserDTO> findUserById(Long id) throws ResourceNotFoundException {
+    public UserDTO findUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return Optional.ofNullable(convertToDTO(user));
+        return convertToDTO(user);
     }
 
     @Override
