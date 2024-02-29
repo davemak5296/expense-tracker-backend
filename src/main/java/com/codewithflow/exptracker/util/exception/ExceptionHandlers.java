@@ -1,4 +1,4 @@
-package com.codewithflow.exptracker.exception;
+package com.codewithflow.exptracker.util.exception;
 
 import com.codewithflow.exptracker.response.GenericResponse;
 import jakarta.validation.ConstraintViolationException;

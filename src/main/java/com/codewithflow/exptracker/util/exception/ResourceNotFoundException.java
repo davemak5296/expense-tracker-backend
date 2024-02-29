@@ -1,4 +1,4 @@
-package com.codewithflow.exptracker.exception;
+package com.codewithflow.exptracker.util.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

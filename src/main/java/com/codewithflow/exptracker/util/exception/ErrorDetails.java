@@ -1,4 +1,4 @@
-package com.codewithflow.exptracker.exception;
+package com.codewithflow.exptracker.util.exception;
 
 import java.util.Date;
 import java.util.List;

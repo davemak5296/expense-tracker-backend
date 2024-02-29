@@ -2,7 +2,7 @@ package com.codewithflow.exptracker.service;
 
 import com.codewithflow.exptracker.dto.UserDTO;
 import com.codewithflow.exptracker.entity.User;
-import com.codewithflow.exptracker.exception.ResourceNotFoundException;
+import com.codewithflow.exptracker.util.exception.ResourceNotFoundException;
 import com.codewithflow.exptracker.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

@@ -3,7 +3,6 @@ package com.codewithflow.exptracker.controller;
 import com.codewithflow.exptracker.dto.GreetingDTO;
 import com.codewithflow.exptracker.dto.UserDTO;
 import com.codewithflow.exptracker.entity.User;
-import com.codewithflow.exptracker.exception.ResourceNotFoundException;
 import com.codewithflow.exptracker.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
