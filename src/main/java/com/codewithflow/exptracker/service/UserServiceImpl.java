@@ -25,13 +25,12 @@ public class UserServiceImpl implements UserService {
     public User register(UserDTO userDTO) throws ParseException {
         User user = convertToEntity(userDTO);
         user.setBlock(false);
-//        userRepository.save(user);
+
         return userRepository.save(user);
     }
 
     @Override
     public Optional<UserDTO> findUserById(Long id) throws ResourceNotFoundException {
-//        return Optional.empty();
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return Optional.ofNullable(convertToDTO(user));
     }

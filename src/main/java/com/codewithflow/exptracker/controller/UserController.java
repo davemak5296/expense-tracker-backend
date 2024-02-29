@@ -25,7 +25,6 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public User register(@Valid @RequestBody UserDTO userDTO) throws ParseException {
-        System.out.println("Registering user...");
         return userService.register(userDTO);
     }
 
