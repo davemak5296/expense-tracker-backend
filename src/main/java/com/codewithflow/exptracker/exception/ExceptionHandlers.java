@@ -2,6 +2,9 @@ package com.codewithflow.exptracker.exception;
 
 import com.codewithflow.exptracker.response.GenericResponse;
 import jakarta.validation.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -18,6 +21,17 @@ import java.util.*;
 
 @ControllerAdvice
 public class ExceptionHandlers extends ResponseEntityExceptionHandler {
+
+    private static final String MESSAGE_DUPLICATE_EMAIL = "Email already exists";
+
+    private static final String MESSAGE_DATA_ERROR_DEFAULT = "Invalid input. Please check your data and try again.";
+
+    private static final Map<String, String> CONSTRAINT_ERRMSG_MAP = Map.of(
+            "users_email_key", MESSAGE_DUPLICATE_EMAIL
+    );
+
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionHandlers.class);
+
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -41,6 +55,26 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
                 .toList();
 
         return new GenericResponse<>(false, null, new ErrorDetails(new Date(), errors, request.getDescription(false)));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public GenericResponse<?,?> dataIntegrityViolationExceptionHandler(DataIntegrityViolationException ex, WebRequest request) {
+        logger.error(ex.getMessage());
+
+        String rootMsg = ex.getMostSpecificCause().getMessage();
+
+        if (rootMsg != null) {
+            String lowerCaseMsg = rootMsg.toLowerCase();
+            for (Map.Entry<String, String> entry: CONSTRAINT_ERRMSG_MAP.entrySet()) {
+                if (lowerCaseMsg.contains(entry.getKey())) {
+                    return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList(entry.getValue()), request.getDescription(false)));
+                }
+            }
+        }
+
+        return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList(MESSAGE_DATA_ERROR_DEFAULT), request.getDescription(false)));
     }
 
     @Override
