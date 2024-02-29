@@ -29,6 +29,8 @@ target/
 src/main/resources/config/*
 !**/src/main/resources/config/*.example
 !**/src/main/resources/config/README.md
+src/test/resources/application.yml
+src/test/resources/application-*.yml
 
 ### log files ###
 logs/
