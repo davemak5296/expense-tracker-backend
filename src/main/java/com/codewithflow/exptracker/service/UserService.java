@@ -1,18 +1,18 @@
 package com.codewithflow.exptracker.service;
 
-import com.codewithflow.exptracker.dto.UserDTO;
+import com.codewithflow.exptracker.dto.UserReqDTO;
+import com.codewithflow.exptracker.dto.UserRespDTO;
 import com.codewithflow.exptracker.entity.User;
 
 import java.text.ParseException;
-import java.util.Optional;
 
 public interface UserService {
 
-    User register(UserDTO userDTO) throws ParseException;
+    UserRespDTO register(UserReqDTO userReqDTO) throws ParseException;
 
-    UserDTO findUserById(Long id);
+    UserRespDTO findUserById(Long id);
 
-    UserDTO convertToDTO(User user);
+    UserRespDTO convertToDTO(User user);
 
-    User convertToEntity(UserDTO userDTO) throws ParseException;
+    User convertToEntity(UserReqDTO userReqDTO) throws ParseException;
 }

@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Length;
 //    String alias
 //) { }
 
-public class UserDTO {
+public class UserReqDTO {
 
     @NotBlank(message = "Invalid Email: Email cannot be blank")
     @NotNull(message = "Invalid Email: Email cannot be null")
@@ -30,8 +30,8 @@ public class UserDTO {
     @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Invalid Alias: Alias must only contain letters and numbers")
     String alias;
 
-    public UserDTO() { }
-    public UserDTO(String email, String password, String alias) {
+    public UserReqDTO() { }
+    public UserReqDTO(String email, String password, String alias) {
         this.email = email;
         this.password = password;
         this.alias = alias;

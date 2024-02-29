@@ -1,7 +1,8 @@
 package com.codewithflow.exptracker.controller;
 
 import com.codewithflow.exptracker.dto.GreetingDTO;
-import com.codewithflow.exptracker.dto.UserDTO;
+import com.codewithflow.exptracker.dto.UserReqDTO;
+import com.codewithflow.exptracker.dto.UserRespDTO;
 import com.codewithflow.exptracker.entity.User;
 import com.codewithflow.exptracker.service.UserService;
 import jakarta.validation.Valid;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -23,13 +23,13 @@ public class UserController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public User register(@Valid @RequestBody UserDTO userDTO) throws ParseException {
-        return userService.register(userDTO);
+    public UserRespDTO register(@Valid @RequestBody UserReqDTO userReqDTO) throws ParseException {
+        return userService.register(userReqDTO);
     }
 
     @GetMapping("/user/{id}")
     @ResponseBody
-    public UserDTO getUserById(@PathVariable Long id) {
+    public UserRespDTO getUserById(@PathVariable Long id) {
         return userService.findUserById(id);
     }
 

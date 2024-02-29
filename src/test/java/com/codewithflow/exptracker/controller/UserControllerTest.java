@@ -1,7 +1,7 @@
 package com.codewithflow.exptracker.controller;
 
 import com.codewithflow.exptracker.AbstractTestContainer;
-import com.codewithflow.exptracker.dto.UserDTO;
+import com.codewithflow.exptracker.dto.UserReqDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class UserControllerTest extends AbstractTestContainer {
     private MockMvc mvc;
 
     @Autowired
-    private JacksonTester<UserDTO> jsonUserDTO;
+    private JacksonTester<UserReqDTO> jsonUserDTO;
 
     @Test
     public void canRetrieveByIdWhenExists() throws Exception {
@@ -42,7 +42,7 @@ public class UserControllerTest extends AbstractTestContainer {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
 
         assertThat(response.getContentAsString()).isEqualTo(
-                jsonUserDTO.write(new UserDTO("zzz@gmail.com", "test1234", "zzz")).getJson()
+                jsonUserDTO.write(new UserReqDTO("zzz@gmail.com", "test1234", "zzz")).getJson()
         );
     }
 }

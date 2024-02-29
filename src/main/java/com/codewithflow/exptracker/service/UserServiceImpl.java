@@ -1,6 +1,7 @@
 package com.codewithflow.exptracker.service;
 
-import com.codewithflow.exptracker.dto.UserDTO;
+import com.codewithflow.exptracker.dto.UserReqDTO;
+import com.codewithflow.exptracker.dto.UserRespDTO;
 import com.codewithflow.exptracker.entity.User;
 import com.codewithflow.exptracker.util.exception.ResourceNotFoundException;
 import com.codewithflow.exptracker.repository.UserRepository;
@@ -21,26 +22,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User register(UserDTO userDTO) throws ParseException {
-        User user = convertToEntity(userDTO);
+    public UserRespDTO register(UserReqDTO userReqDTO) throws ParseException {
+        User user = convertToEntity(userReqDTO);
         user.setBlock(false);
 
-        return userRepository.save(user);
+        return convertToDTO(userRepository.save(user));
     }
 
     @Override
-    public UserDTO findUserById(Long id) {
+    public UserRespDTO findUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return convertToDTO(user);
     }
 
     @Override
-    public UserDTO convertToDTO(User user) {
-        return modelMapper.map(user, UserDTO.class);
+    public UserRespDTO convertToDTO(User user) {
+        return modelMapper.map(user, UserRespDTO.class);
     }
 
     @Override
-    public User convertToEntity(UserDTO userDTO) throws ParseException {
-        return modelMapper.map(userDTO, User.class);
+    public User convertToEntity(UserReqDTO userReqDTO) throws ParseException {
+        return modelMapper.map(userReqDTO, User.class);
     }
 }
