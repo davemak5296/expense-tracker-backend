@@ -11,7 +11,7 @@ public interface UserService {
 
     User register(UserDTO userDTO) throws ParseException;
 
-    Optional<UserDTO> findUserById(Long id) throws ResourceNotFoundException;
+    Optional<UserDTO> findUserById(Long id);
 
     UserDTO convertToDTO(User user);
 

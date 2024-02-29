@@ -30,7 +30,7 @@ public class UserController {
 
     @GetMapping("/user/{id}")
     @ResponseBody
-    public Optional<UserDTO> getUserById(@PathVariable Long id) throws ResourceNotFoundException {
+    public Optional<UserDTO> getUserById(@PathVariable Long id) {
         return userService.findUserById(id);
     }
 
