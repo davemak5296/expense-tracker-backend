@@ -5,22 +5,21 @@ import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @ControllerAdvice
-public class ExceptionHandlers extends ResponseEntityExceptionHandler {
+public class ExceptionHandlers {
 
     private static final String MESSAGE_DUPLICATE_EMAIL = "Email already exists";
 
@@ -77,9 +76,10 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
         return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList(MESSAGE_DATA_ERROR_DEFAULT), request.getDescription(false)));
     }
 
-    @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected GenericResponse<?,?> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex, WebRequest request) {
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -90,8 +90,7 @@ public class ExceptionHandlers extends ResponseEntityExceptionHandler {
                         error.getDefaultMessage()))
                 .toList();
 
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), errors, request.getDescription(false));
-        return new ResponseEntity<>(new GenericResponse<>(false, null, errorDetails), HttpStatus.BAD_REQUEST);
+        return new GenericResponse<>(false, null, new ErrorDetails(new Date(), errors, request.getDescription(false)));
     }
 
     @ExceptionHandler(Exception.class)
