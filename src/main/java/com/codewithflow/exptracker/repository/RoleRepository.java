@@ -1,8 +1,12 @@
 package com.codewithflow.exptracker.repository;
 
 import com.codewithflow.exptracker.entity.Role;
-import com.codewithflow.exptracker.entity.User;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RoleRepository extends CrudRepository<Role, Long> {
+import java.util.Optional;
+
+public interface RoleRepository extends JpaRepository<Role, Long> {
+
+    Optional<Role> findByName(String name);
+
 }

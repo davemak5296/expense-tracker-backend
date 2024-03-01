@@ -1,8 +1,12 @@
 package com.codewithflow.exptracker.repository;
 
 import com.codewithflow.exptracker.entity.Privilege;
-import com.codewithflow.exptracker.entity.Role;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PrivilegeRepository extends CrudRepository<Privilege, Long> {
+import java.util.Optional;
+
+public interface PrivilegeRepository extends JpaRepository<Privilege, Long> {
+
+    Optional<Privilege> findByName(String name);
+
 }
