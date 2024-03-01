@@ -12,6 +12,8 @@ public interface UserService {
 
     UserRespDTO findUserById(Long id);
 
+    void createVerificationTokenForUser(User user);
+
     UserRespDTO convertToDTO(User user);
 
     User convertToEntity(UserReqDTO userReqDTO) throws ParseException;
