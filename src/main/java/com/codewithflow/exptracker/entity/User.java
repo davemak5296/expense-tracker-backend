@@ -66,4 +66,12 @@ public class User extends BaseEntity implements Serializable {
     public void setBlock(Boolean block) {
         isBlock = block;
     }
+
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
 }
