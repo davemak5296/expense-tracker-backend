@@ -4,6 +4,7 @@ import com.codewithflow.exptracker.response.GenericResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -81,15 +82,10 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected GenericResponse<?,?> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex, WebRequest request) {
         List<String> errors = ex.getBindingResult()
-                .getFieldErrors()
+                .getAllErrors()
                 .stream()
-                .map(error -> String.format(
-                        "%s - Provided: %s. Error msg: %s",
-                        error.getField(),
-                        error.getRejectedValue(),
-                        error.getDefaultMessage()))
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .toList();
-
         return new GenericResponse<>(false, null, new ErrorDetails(new Date(), errors, request.getDescription(false)));
     }
 

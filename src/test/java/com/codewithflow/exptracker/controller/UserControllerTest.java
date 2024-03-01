@@ -42,7 +42,7 @@ public class UserControllerTest extends AbstractTestContainer {
         assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
 
         assertThat(response.getContentAsString()).isEqualTo(
-                jsonUserDTO.write(new UserReqDTO("zzz@gmail.com", "test1234", "zzz")).getJson()
+                jsonUserDTO.write(new UserReqDTO("zzz@gmail.com", "test1234", "test1111", "zzz")).getJson()
         );
     }
 }

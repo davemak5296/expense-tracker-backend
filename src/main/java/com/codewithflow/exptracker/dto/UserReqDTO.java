@@ -1,5 +1,6 @@
 package com.codewithflow.exptracker.dto;
 
+import com.codewithflow.exptracker.util.exception.validation.PasswordMatches;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
 //    String alias
 //) { }
 
+@PasswordMatches(message = "Passwords don't match")
 public class UserReqDTO {
 
     @NotBlank(message = "Invalid Email: Email cannot be blank")
@@ -23,6 +25,7 @@ public class UserReqDTO {
     @NotBlank(message = "Invalid Password: Password cannot be blank")
     @NotNull(message = "Invalid Password: Password cannot be null")
     String password;
+    String matchingPassword;
 
     @NotBlank(message = "Invalid Alias: Alias cannot be blank")
     @NotNull(message = "Invalid Alias: Alias cannot be null")
@@ -31,9 +34,10 @@ public class UserReqDTO {
     String alias;
 
     public UserReqDTO() { }
-    public UserReqDTO(String email, String password, String alias) {
+    public UserReqDTO(String email, String password, String alias, String matchingPassword) {
         this.email = email;
         this.password = password;
+        this.matchingPassword = matchingPassword;
         this.alias = alias;
     }
 
@@ -51,6 +55,14 @@ public class UserReqDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getMatchingPassword() {
+        return matchingPassword;
+    }
+
+    public void setMatchingPassword(String matchingPassword) {
+        this.matchingPassword = matchingPassword;
     }
 
     public String getAlias() {
