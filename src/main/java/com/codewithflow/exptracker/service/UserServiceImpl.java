@@ -26,12 +26,14 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final VerificationTokenRepository tokenRepository;
     private final ModelMapper modelMapper;
+    private final EmailService emailService;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, VerificationTokenRepository tokenRepository,ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, VerificationTokenRepository tokenRepository,ModelMapper modelMapper, EmailService emailService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.tokenRepository = tokenRepository;
         this.modelMapper = modelMapper;
+        this.emailService = emailService;
     }
 
     @Override
@@ -46,7 +48,9 @@ public class UserServiceImpl implements UserService {
         user.setBlock(false);
         user = userRepository.save(user);
 
-        createVerificationTokenForUser(user);
+        String token = createVerificationTokenForUser(user);
+
+        emailService.sendSimpleMessage(user.getEmail(), "Account Verification", "Click the link to verify your account: http://localhost:8080/verify/" + token);
 
         return convertToDTO(user);
     }
@@ -58,10 +62,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createVerificationTokenForUser(User user){
+    public String createVerificationTokenForUser(User user){
         String token = UUID.randomUUID().toString();
         VerificationToken vToken = new VerificationToken(token, user);
         tokenRepository.save(vToken);
+        return vToken.getToken();
     }
 
     @Override
