@@ -46,11 +46,12 @@ public class UserServiceImpl implements UserService {
         }
         user.setRoles(Collections.singletonList(roleRepository.findByName("ROLE_USER").get()));
         user.setBlock(false);
+        user.setEnabled(false);
         user = userRepository.save(user);
 
         String token = createVerificationTokenForUser(user);
 
-        emailService.sendSimpleMessage(user.getEmail(), "Account Verification", "Click the link to verify your account: http://localhost:8080/verify/" + token);
+//        emailService.sendSimpleMessage(user.getEmail(), "Account Verification", "Click the link to verify your account: http://localhost:8080/verify/" + token);
 
         return convertToDTO(user);
     }

@@ -31,6 +31,10 @@ public class User extends BaseEntity implements Serializable {
     @Column(name = "is_block")
     private Boolean isBlock;
 
+    @NotNull
+    @ColumnDefault("false")
+    private Boolean enabled;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
@@ -69,6 +73,14 @@ public class User extends BaseEntity implements Serializable {
 
     public void setBlock(Boolean block) {
         isBlock = block;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public Collection<Role> getRoles() {
