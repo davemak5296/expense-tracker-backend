@@ -1,4 +1,4 @@
-package com.codewithflow.exptracker.security;
+package com.codewithflow.exptracker.springconfig;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
