@@ -35,6 +35,10 @@ public class User extends BaseEntity implements Serializable {
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
+    @OneToOne(mappedBy = "user")
+    private VerificationToken verificationToken;
+
+
     public String getEmail() {
         return email;
     }
@@ -73,5 +77,13 @@ public class User extends BaseEntity implements Serializable {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
+    }
+
+    public VerificationToken getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(VerificationToken verificationToken) {
+        this.verificationToken = verificationToken;
     }
 }
