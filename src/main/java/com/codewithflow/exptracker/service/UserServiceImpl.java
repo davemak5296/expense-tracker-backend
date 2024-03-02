@@ -4,19 +4,16 @@ import com.codewithflow.exptracker.dto.UserReqDTO;
 import com.codewithflow.exptracker.dto.UserRespDTO;
 import com.codewithflow.exptracker.entity.Role;
 import com.codewithflow.exptracker.entity.User;
-import com.codewithflow.exptracker.entity.VerificationToken;
 import com.codewithflow.exptracker.repository.RoleRepository;
 import com.codewithflow.exptracker.repository.VerificationTokenRepository;
 import com.codewithflow.exptracker.util.exception.ResourceNotFoundException;
 import com.codewithflow.exptracker.repository.UserRepository;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.Collections;
-import java.util.UUID;
 
 @Service
 @Transactional
@@ -24,14 +21,14 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final VerificationTokenRepository tokenRepository;
+    private final VerificationTokenService tokenService;
     private final ModelMapper modelMapper;
     private final EmailService emailService;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, VerificationTokenRepository tokenRepository,ModelMapper modelMapper, EmailService emailService) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, VerificationTokenService tokenService,ModelMapper modelMapper, EmailService emailService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.tokenRepository = tokenRepository;
+        this.tokenService = tokenService;
         this.modelMapper = modelMapper;
         this.emailService = emailService;
     }
@@ -49,7 +46,7 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(false);
         user = userRepository.save(user);
 
-        String token = createVerificationTokenForUser(user);
+        String token = tokenService.createVerificationTokenForUser(user);
 
 //        emailService.sendSimpleMessage(user.getEmail(), "Account Verification", "Click the link to verify your account: http://localhost:8080/verify/" + token);
 
@@ -63,12 +60,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String createVerificationTokenForUser(User user){
-        String token = UUID.randomUUID().toString();
-        VerificationToken vToken = new VerificationToken(token, user);
-        tokenRepository.save(vToken);
-        return vToken.getToken();
-    }
+    public User enabledUser(User user) {
+        user.setEnabled(true);
+        return userRepository.save(user);
+    };
 
     @Override
     public UserRespDTO convertToDTO(User user) {

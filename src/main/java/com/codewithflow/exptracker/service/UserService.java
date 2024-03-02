@@ -12,7 +12,7 @@ public interface UserService {
 
     UserRespDTO findUserById(Long id);
 
-    String createVerificationTokenForUser(User user);
+    User enabledUser(User user);
 
     UserRespDTO convertToDTO(User user);
 
