@@ -37,8 +37,8 @@ public class VerificationTokenTokenServiceImpl implements VerificationTokenServi
 
         return (verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) < 0;
     }
-    @Override
 
+    @Override
     public void deleteVerificationToken(VerificationToken verificationToken) {
         tokenRepository.delete(verificationToken);
     };

@@ -14,6 +14,8 @@ public interface UserService {
 
     User enabledUser(User user);
 
+    void resendVerificationEmail(User user);
+
     UserRespDTO convertToDTO(User user);
 
     User convertToEntity(UserReqDTO userReqDTO) throws ParseException;

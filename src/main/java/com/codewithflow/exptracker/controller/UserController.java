@@ -5,6 +5,7 @@ import com.codewithflow.exptracker.dto.UserRespDTO;
 import com.codewithflow.exptracker.entity.User;
 import com.codewithflow.exptracker.entity.VerificationToken;
 import com.codewithflow.exptracker.repository.RoleRepository;
+import com.codewithflow.exptracker.repository.VerificationTokenRepository;
 import com.codewithflow.exptracker.service.UserService;
 import com.codewithflow.exptracker.service.VerificationTokenService;
 import jakarta.servlet.http.Cookie;
@@ -25,6 +26,7 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final VerificationTokenService tokenService;
+    private final VerificationTokenRepository tokenRepository;
     private final RoleRepository roleRepository;
 
     @Value("${exptracker.client.url}")
@@ -33,9 +35,10 @@ public class UserController {
     @Value("${spring.profiles.active}")
     private String activeProfile;
 
-    public UserController(UserService userService, VerificationTokenService tokenService, RoleRepository roleRepository) {
+    public UserController(UserService userService, VerificationTokenService tokenService, VerificationTokenRepository tokenRepository, RoleRepository roleRepository) {
         this.userService = userService;
         this.tokenService = tokenService;
+        this.tokenRepository = tokenRepository;
         this.roleRepository = roleRepository;
     }
 
@@ -80,6 +83,23 @@ public class UserController {
 
         return new RedirectView(clientUrl + "/profile");
     };
+
+    @GetMapping("/resendVerificationToken")
+    @Transactional
+    public void resendVerificationToken(@RequestParam("expiredToken") String expiredToken, HttpServletResponse response) {
+
+        Optional<VerificationToken> vExpiredToken = tokenService.getVerificationToken(expiredToken);
+
+        if (vExpiredToken.isEmpty()) {
+            throw new IllegalArgumentException("Expired token not found");
+        }
+
+        tokenService.deleteVerificationToken(vExpiredToken.get());
+        tokenRepository.flush();
+
+        userService.resendVerificationEmail(vExpiredToken.get().getUser());
+
+    }
 
     @PostMapping("/test")
     public void test(@RequestBody Map<String, Long> greeting) {
