@@ -1,6 +1,7 @@
 package com.codewithflow.exptracker.dto;
 
 import com.codewithflow.exptracker.util.exception.validation.PasswordMatches;
+import com.codewithflow.exptracker.util.exception.validation.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class UserReqDTO {
 
     @NotBlank(message = "Invalid Password: Password cannot be blank")
     @NotNull(message = "Invalid Password: Password cannot be null")
+    @ValidPassword
     String password;
     String matchingPassword;
 

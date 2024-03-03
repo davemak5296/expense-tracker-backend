@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Stream;
 
 @ControllerAdvice
 public class ExceptionHandlers {
@@ -85,7 +83,8 @@ public class ExceptionHandlers {
         List<String> errors = ex.getBindingResult()
                 .getAllErrors()
                 .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .map(error -> Objects.requireNonNull(error.getDefaultMessage()).split(";"))
+                .flatMap(Stream::of)
                 .toList();
         return new GenericResponse<>(false, null, new ErrorDetails(new Date(), errors, request.getDescription(false)));
     }
