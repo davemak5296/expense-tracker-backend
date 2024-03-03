@@ -9,6 +9,7 @@ import com.codewithflow.exptracker.util.exception.ResourceNotFoundException;
 import com.codewithflow.exptracker.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,16 +25,18 @@ public class UserServiceImpl implements UserService {
     private final VerificationTokenService tokenService;
     private final ModelMapper modelMapper;
     private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${exptracker.server.url}")
     private String serverUrl;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, VerificationTokenService tokenService,ModelMapper modelMapper, EmailService emailService) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, VerificationTokenService tokenService,ModelMapper modelMapper, EmailService emailService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.tokenService = tokenService;
         this.modelMapper = modelMapper;
         this.emailService = emailService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -44,6 +47,7 @@ public class UserServiceImpl implements UserService {
             role.setName("ROLE_USER");
             roleRepository.save(role);
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Collections.singletonList(roleRepository.findByName("ROLE_USER").get()));
         user.setBlock(false);
         user.setEnabled(false);
@@ -51,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
         String token = tokenService.createVerificationTokenForUser(user);
 
-        emailService.sendSimpleMessage(user.getEmail(), "Account Verification", "Click the link to verify your account: " + serverUrl + "/registerConfirm?token=" + token);
+//        emailService.sendSimpleMessage(user.getEmail(), "Account Verification", "Click the link to verify your account: " + serverUrl + "/registerConfirm?token=" + token);
 
         return convertToDTO(user);
     }
@@ -71,7 +75,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void resendVerificationEmail(User user) {
         String token = tokenService.createVerificationTokenForUser(user);
-        emailService.sendSimpleMessage(user.getEmail(), "[Resend] Account Verification", "Click the link to verify your account: " + serverUrl + "/registerConfirm?token=" + token);
+//        emailService.sendSimpleMessage(user.getEmail(), "[Resend] Account Verification", "Click the link to verify your account: " + serverUrl + "/registerConfirm?token=" + token);
     };
 
     @Override
