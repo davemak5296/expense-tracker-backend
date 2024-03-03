@@ -8,6 +8,10 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -87,6 +91,19 @@ public class ExceptionHandlers {
                 .flatMap(Stream::of)
                 .toList();
         return new GenericResponse<>(false, null, new ErrorDetails(new Date(), errors, request.getDescription(false)));
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public GenericResponse<?,?> authenticationExceptionHandler(AuthenticationException ex, WebRequest request) {
+        if (ex instanceof BadCredentialsException) {
+            return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList("Invalid password"), request.getDescription(false)));
+        } else if (ex instanceof DisabledException) {
+            return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList("User is disabled. Please check your mailbox for activation link"), request.getDescription(false)));
+        }
+        return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList(ex.getMessage()), request.getDescription(false)));
+
     }
 
     @ExceptionHandler(MailException.class)
