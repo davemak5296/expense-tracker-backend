@@ -1,5 +1,6 @@
 package com.codewithflow.exptracker.controller;
 
+import com.codewithflow.exptracker.dto.LoginReqDTO;
 import com.codewithflow.exptracker.dto.UserReqDTO;
 import com.codewithflow.exptracker.dto.UserRespDTO;
 import com.codewithflow.exptracker.entity.User;
@@ -13,6 +14,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
@@ -28,6 +33,7 @@ public class UserController {
     private final VerificationTokenService tokenService;
     private final VerificationTokenRepository tokenRepository;
     private final RoleRepository roleRepository;
+    private final AuthenticationManager authManager;
 
     @Value("${exptracker.client.url}")
     private String clientUrl;
@@ -35,11 +41,12 @@ public class UserController {
     @Value("${spring.profiles.active}")
     private String activeProfile;
 
-    public UserController(UserService userService, VerificationTokenService tokenService, VerificationTokenRepository tokenRepository, RoleRepository roleRepository) {
+    public UserController(UserService userService, VerificationTokenService tokenService, VerificationTokenRepository tokenRepository, RoleRepository roleRepository, AuthenticationManager authManager) {
         this.userService = userService;
         this.tokenService = tokenService;
         this.tokenRepository = tokenRepository;
         this.roleRepository = roleRepository;
+        this.authManager = authManager;
     }
 
     @PostMapping("/register")
@@ -99,6 +106,15 @@ public class UserController {
 
         userService.resendVerificationEmail(vExpiredToken.get().getUser());
 
+    }
+
+    @PostMapping("/login")
+    @ResponseBody
+    public void login(@RequestBody LoginReqDTO loginReqDTO) {
+        Authentication authenticationReq = UsernamePasswordAuthenticationToken.unauthenticated(loginReqDTO.getUsername(), loginReqDTO.getPassword());
+        Authentication authenticationResp = authManager.authenticate(authenticationReq);
+
+        SecurityContextHolder.getContext().setAuthentication(authenticationResp);
     }
 
     @PostMapping("/test")
