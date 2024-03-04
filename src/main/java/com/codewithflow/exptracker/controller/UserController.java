@@ -9,22 +9,16 @@ import com.codewithflow.exptracker.repository.RoleRepository;
 import com.codewithflow.exptracker.repository.VerificationTokenRepository;
 import com.codewithflow.exptracker.service.UserService;
 import com.codewithflow.exptracker.service.VerificationTokenService;
-import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -33,31 +27,35 @@ public class UserController {
     private final VerificationTokenService tokenService;
     private final VerificationTokenRepository tokenRepository;
     private final RoleRepository roleRepository;
-    private final AuthenticationManager authManager;
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
 
     @Value("${exptracker.client.url}")
     private String clientUrl;
 
-    @Value("${spring.profiles.active}")
-    private String activeProfile;
-
-    public UserController(UserService userService, VerificationTokenService tokenService, VerificationTokenRepository tokenRepository, RoleRepository roleRepository, AuthenticationManager authManager) {
+    public UserController(
+            UserService userService,
+            VerificationTokenService tokenService,
+            VerificationTokenRepository tokenRepository,
+            RoleRepository roleRepository,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
         this.userService = userService;
         this.tokenService = tokenService;
         this.tokenRepository = tokenRepository;
         this.roleRepository = roleRepository;
-        this.authManager = authManager;
+        this.request = request;
+        this.response = response;
     }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
     public UserRespDTO register(@Valid @RequestBody UserReqDTO userReqDTO) throws ParseException {
         return userService.register(userReqDTO);
     }
 
     @GetMapping("/user/{id}")
-    @ResponseBody
     public UserRespDTO getUserById(@PathVariable Long id) {
         System.out.println(roleRepository.findByName("ROLE_USER"));
         return userService.findUserById(id);
@@ -65,7 +63,7 @@ public class UserController {
 
     @GetMapping("/registerConfirm")
     @Transactional
-    public RedirectView registerConfirm(@RequestParam("token") String token, HttpServletResponse response) {
+    public RedirectView registerConfirm(@RequestParam("token") String token) {
         System.out.println("token is: " + token);
 
         Optional<VerificationToken> vtoken = tokenService.getVerificationToken(token);
@@ -82,18 +80,12 @@ public class UserController {
 
         tokenService.deleteVerificationToken(vtoken.get());
 
-        Cookie cookie = new Cookie("firstLogin", "true");
-        cookie.setMaxAge(60 * 60);
-        cookie.setPath("/");
-        cookie.setSecure(activeProfile.equals("production"));
-        response.addCookie(cookie);
-
-        return new RedirectView(clientUrl + "/profile");
+        return new RedirectView(clientUrl + "/accountVerified");
     };
 
     @GetMapping("/resendVerificationToken")
     @Transactional
-    public void resendVerificationToken(@RequestParam("expiredToken") String expiredToken, HttpServletResponse response) {
+    public void resendVerificationToken(@RequestParam("expiredToken") String expiredToken) {
 
         Optional<VerificationToken> vExpiredToken = tokenService.getVerificationToken(expiredToken);
 
@@ -109,22 +101,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    @ResponseBody
     public void login(@RequestBody LoginReqDTO loginReqDTO) {
-        Authentication authenticationReq = UsernamePasswordAuthenticationToken.unauthenticated(loginReqDTO.getUsername(), loginReqDTO.getPassword());
-        Authentication authenticationResp = authManager.authenticate(authenticationReq);
-
-        SecurityContextHolder.getContext().setAuthentication(authenticationResp);
+        userService.login(loginReqDTO, response);
     }
 
-    @PostMapping("/test")
-    public void test(@RequestBody Map<String, Long> greeting) {
-        final Calendar cal = Calendar.getInstance();
-        System.out.println(cal.getTime());
+    @GetMapping("/refreshToken")
+    public void refreshToken() {
+        userService.refreshToken(request, response);
     }
 
-//    @PostMapping("/test")
-//    public GreetingDTO test(@RequestBody Map<String, Long> greeting) {
-//       return new GreetingDTO(greeting.get("testId"), "ok");
-//    }
+    @GetMapping("/logout")
+    public void logout() {
+        userService.logout(request, response);
+    }
 }

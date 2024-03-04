@@ -1,6 +1,7 @@
 package com.codewithflow.exptracker.util.exception;
 
 import com.codewithflow.exptracker.response.GenericResponse;
+import io.jsonwebtoken.JwtException;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,6 +105,13 @@ public class ExceptionHandlers {
         }
         return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList(ex.getMessage()), request.getDescription(false)));
 
+    }
+
+    @ExceptionHandler(JwtException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public GenericResponse<?,?> jwtExceptionHandler(JwtException ex, WebRequest request) {
+        return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList(ex.getMessage()), request.getDescription(false)));
     }
 
     @ExceptionHandler(MailException.class)
