@@ -40,6 +40,10 @@ public class JwtServiceImpl implements JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("user_id", String.class));
+    }
+
     @Override
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -65,6 +69,7 @@ public class JwtServiceImpl implements JwtService {
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(user.getEmail())
+                .claim("user_id", user.getId().toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)

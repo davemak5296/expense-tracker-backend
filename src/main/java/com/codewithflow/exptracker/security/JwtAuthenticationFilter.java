@@ -4,8 +4,10 @@ import com.codewithflow.exptracker.repository.IssuedJwtRepository;
 import com.codewithflow.exptracker.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +20,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -34,6 +38,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
         this.issuedJwtRepository = issuedJwtRepository;
+    }
+
+    static class AppendRequest extends HttpServletRequestWrapper {
+        private final Map<String, String> customParameters;
+
+        public AppendRequest(ServletRequest request) {
+            super((HttpServletRequest) request);
+            customParameters = new HashMap<>();
+        }
+
+        public void addCustomParameter(String name, String value) {
+            customParameters.put(name, value);
+        }
+
+        @Override
+        public String getParameter(String name) {
+            String originalParameter = super.getParameter(name);
+            if (originalParameter != null) {
+                return originalParameter;
+            }
+            return customParameters.get(name);
+        }
     }
 
     @Override
@@ -88,6 +114,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             );
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
-        filterChain.doFilter(request, response);
+
+        AppendRequest customReq = new AppendRequest(request);
+        customReq.addCustomParameter("jwt_user_id", jwtService.extractUserId(jwt));
+        filterChain.doFilter(customReq, response);
     }
 }
