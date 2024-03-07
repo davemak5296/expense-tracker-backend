@@ -6,7 +6,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
@@ -18,11 +18,11 @@ public abstract class BaseEntity implements Serializable {
 
     @CreatedDate
     @Column(nullable = false, updatable = false, name = "created_date")
-    protected LocalDateTime createdDate;
+    protected Timestamp createdDate;
 
     @LastModifiedDate
     @Column(name = "last_modified_date")
-    protected LocalDateTime lastModifiedDate;
+    protected Timestamp lastModifiedDate;
 
     public Long getId() {
         return id;
@@ -32,19 +32,19 @@ public abstract class BaseEntity implements Serializable {
         this.id = id;
     }
 
-    public LocalDateTime getCreatedDate() {
+    public Timestamp getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(LocalDateTime createdDate) {
+    public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate;
     }
 
-    public LocalDateTime getLastModifiedDate() {
+    public Timestamp getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    public void setLastModifiedDate(Timestamp lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 }
