@@ -121,6 +121,13 @@ public class ExceptionHandlers {
         return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList("Mail error: " + ex.getMessage()), request.getDescription(false)));
     }
 
+    @ExceptionHandler(SubCategoryIdNotMatchException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public GenericResponse<?,?> subCategoryIdNotMatchExceptionHandler(SubCategoryIdNotMatchException ex, WebRequest request) {
+        return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList(ex.getMessage()), request.getDescription(false)));
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
