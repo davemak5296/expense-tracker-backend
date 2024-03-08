@@ -75,4 +75,17 @@ public class SubCategory extends BaseEntity implements Serializable {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "SubCategory{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", mainCategory=" + mainCategory +
+                ", user=" + user +
+                ", id=" + id +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
+                '}';
+    }
 }

@@ -87,4 +87,19 @@ public class CashFlowEntry extends BaseEntity implements Serializable {
     public void setBookDate(LocalDate bookDate) {
         this.bookDate = bookDate;
     }
+
+    @Override
+    public String toString() {
+        return "CashFlowEntry{" +
+                "user=" + user +
+                ", description='" + description + '\'' +
+                ", type=" + type +
+                ", subCategory=" + subCategory +
+                ", amount=" + amount +
+                ", bookDate=" + bookDate +
+                ", id=" + id +
+                ", createdDate=" + createdDate +
+                ", lastModifiedDate=" + lastModifiedDate +
+                '}';
+    }
 }

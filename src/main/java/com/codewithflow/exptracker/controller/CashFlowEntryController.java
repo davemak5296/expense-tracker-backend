@@ -1,6 +1,7 @@
 package com.codewithflow.exptracker.controller;
 
 import com.codewithflow.exptracker.dto.CashFlowEntryPostReqDTO;
+import com.codewithflow.exptracker.dto.updateEntryReqDTO;
 import com.codewithflow.exptracker.dto.CashFlowEntryRespDTO;
 import com.codewithflow.exptracker.service.CashFlowEntryService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,10 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -41,5 +39,14 @@ public class CashFlowEntryController {
             @Valid @RequestBody CashFlowEntryPostReqDTO newEntryDTO
     ) throws ParseException {
         return cashFlowEntryService.createNewEntry(newEntryDTO, request);
+    }
+
+    @PutMapping("/entry/{entryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CashFlowEntryRespDTO updateCashFlowEntry(
+       @PathVariable Long entryId,
+       @Valid @RequestBody updateEntryReqDTO updatedEntry
+    ) {
+        return cashFlowEntryService.updateEntry(updatedEntry, entryId, Long.parseLong(request.getParameter("jwt_user_id")));
     }
 }

@@ -1,5 +1,6 @@
 package com.codewithflow.exptracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -52,10 +53,12 @@ public class MainCategory extends BaseEntity implements Serializable {
         this.type = type;
     }
 
+    @JsonIgnore
     public List<SubCategory> getSubCategories() {
         return subCategories;
     }
 
+    @JsonIgnore
     public void setSubCategories(List<SubCategory> subCategories) {
         this.subCategories = subCategories;
     }
