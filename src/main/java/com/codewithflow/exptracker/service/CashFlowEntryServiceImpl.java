@@ -1,6 +1,6 @@
 package com.codewithflow.exptracker.service;
 
-import com.codewithflow.exptracker.dto.CashFlowEntryPostReqDTO;
+import com.codewithflow.exptracker.dto.newEntryReqDTO;
 import com.codewithflow.exptracker.dto.updateEntryReqDTO;
 import com.codewithflow.exptracker.dto.CashFlowEntryRespDTO;
 import com.codewithflow.exptracker.entity.CashFlowEntry;
@@ -46,7 +46,7 @@ public class CashFlowEntryServiceImpl implements CashFlowEntryService{
 
     @Override
     public CashFlowEntryRespDTO createNewEntry(
-            CashFlowEntryPostReqDTO reqDTO,
+            newEntryReqDTO reqDTO,
             HttpServletRequest request
     ) throws ParseException {
         if (reqDTO.getSubCategoryUserId() != Long.parseLong(request.getParameter("jwt_user_id"))) {

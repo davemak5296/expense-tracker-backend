@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Range;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class CashFlowEntryPostReqDTO {
+public class newEntryReqDTO {
 
     @NotNull(message = "Invalid type: Type cannot be null")
     @ValueOfEnum(enumClass = EntryType.class)
@@ -38,7 +38,7 @@ public class CashFlowEntryPostReqDTO {
     @Range(min = 1, message = "Invalid userId: userId must be greater than 0")
     private Long userId;
 
-    public CashFlowEntryPostReqDTO(
+    public newEntryReqDTO(
             String type,
             String description,
             BigDecimal amount,

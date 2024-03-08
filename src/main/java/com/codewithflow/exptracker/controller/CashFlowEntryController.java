@@ -1,6 +1,6 @@
 package com.codewithflow.exptracker.controller;
 
-import com.codewithflow.exptracker.dto.CashFlowEntryPostReqDTO;
+import com.codewithflow.exptracker.dto.newEntryReqDTO;
 import com.codewithflow.exptracker.dto.updateEntryReqDTO;
 import com.codewithflow.exptracker.dto.CashFlowEntryRespDTO;
 import com.codewithflow.exptracker.service.CashFlowEntryService;
@@ -36,7 +36,7 @@ public class CashFlowEntryController {
     @PostMapping("/entry")
     @ResponseStatus(HttpStatus.CREATED)
     public CashFlowEntryRespDTO createCashFlowEntry(
-            @Valid @RequestBody CashFlowEntryPostReqDTO newEntryDTO
+            @Valid @RequestBody newEntryReqDTO newEntryDTO
     ) throws ParseException {
         return cashFlowEntryService.createNewEntry(newEntryDTO, request);
     }
