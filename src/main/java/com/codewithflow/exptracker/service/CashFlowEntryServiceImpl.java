@@ -111,6 +111,19 @@ public class CashFlowEntryServiceImpl implements CashFlowEntryService{
         return modelMapper.map(existingEntry.get(), CashFlowEntryRespDTO.class);
     }
 
+    @Override
+    public void deleteEntry(
+            Long entryId,
+            Long jwtUserId
+    ) {
+        Optional<CashFlowEntry> existingEntry = cashFlowEntryRepository.findByIdAndUserId(entryId, jwtUserId);
+        if (existingEntry.isEmpty()) {
+            throw new ResourceNotFoundException("entry not found");
+        }
+
+        cashFlowEntryRepository.deleteByIdAndUserId(entryId, jwtUserId);
+    }
+
     private boolean isSubCatExist(Long subCatId, Long userId) {
         Optional<SubCategory> subCategory = subCategoryRepository.findByIdAndUserId(subCatId, userId);
         return subCategory.isPresent();

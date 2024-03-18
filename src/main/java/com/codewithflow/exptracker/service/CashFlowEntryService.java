@@ -27,4 +27,9 @@ public interface CashFlowEntryService {
             Long entryId,
             Long jwtUserId
     );
+
+    void deleteEntry(
+            Long entryId,
+            Long jwtUserId
+    );
 }

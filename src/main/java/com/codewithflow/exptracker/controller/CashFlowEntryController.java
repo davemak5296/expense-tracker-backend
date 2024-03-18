@@ -60,7 +60,6 @@ public class CashFlowEntryController {
     }
 
     @PutMapping("/entry/{entryId}")
-    @ResponseStatus(HttpStatus.OK)
     public CashFlowEntryRespDTO updateCashFlowEntry(
             @PathVariable Long entryId,
             @Valid @RequestBody updateEntryReqDTO updatedEntry,
@@ -70,13 +69,11 @@ public class CashFlowEntryController {
     }
 
     @GetMapping("/entry/{entryId}")
-    @ResponseStatus(HttpStatus.OK)
     public CashFlowEntryRespDTO getCashFlowEntry(@PathVariable Long entryId) {
         return cashFlowEntryService.getEntry(entryId, Long.parseLong(request.getParameter("jwt_user_id")));
     }
 
     @GetMapping("/entries")
-    @ResponseStatus(HttpStatus.OK)
     public Page<CashFlowEntryRespDTO> getCashFlowEntries(
             @Join(path = "subCategory", alias = "sc")
             @Join(path = "sc.mainCategory", alias = "mc")
@@ -92,5 +89,10 @@ public class CashFlowEntryController {
         Specification<CashFlowEntry> modifiedSpec = entrySpec.and(new entryWithUserIdSpec(request.getParameter("jwt_user_id")));
         Page<CashFlowEntry> pageEntries = cashFlowEntryRepository.findAll(modifiedSpec, pageable);
         return pageEntries.map(entry -> modelMapper.map(entry, CashFlowEntryRespDTO.class));
+    }
+
+    @DeleteMapping("/entry/{entryId}")
+    public void deleteCashFlowEntry(@PathVariable Long entryId) {
+        cashFlowEntryService.deleteEntry(entryId, Long.parseLong(request.getParameter("jwt_user_id")));
     }
 }
