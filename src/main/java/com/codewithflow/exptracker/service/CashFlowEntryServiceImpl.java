@@ -5,23 +5,22 @@ import com.codewithflow.exptracker.dto.updateEntryReqDTO;
 import com.codewithflow.exptracker.dto.CashFlowEntryRespDTO;
 import com.codewithflow.exptracker.entity.CashFlowEntry;
 import com.codewithflow.exptracker.entity.SubCategory;
+import com.codewithflow.exptracker.entity.User;
 import com.codewithflow.exptracker.repository.CashFlowEntryRepository;
 import com.codewithflow.exptracker.repository.SubCategoryRepository;
 import com.codewithflow.exptracker.util.exception.ResourceNotFoundException;
-import com.codewithflow.exptracker.util.exception.SubCategoryIdNotMatchException;
 import jakarta.persistence.EntityManager;
-import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.text.ParseException;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service("cashFlowEntryService")
 @Transactional
@@ -47,22 +46,29 @@ public class CashFlowEntryServiceImpl implements CashFlowEntryService{
     @Override
     public CashFlowEntryRespDTO createNewEntry(
             newEntryReqDTO reqDTO,
-            HttpServletRequest request
-    ) throws ParseException {
-        if (reqDTO.getSubCategoryUserId() != Long.parseLong(request.getParameter("jwt_user_id"))) {
-            throw new SubCategoryIdNotMatchException("sub-category doesn't belong to user");
+            Long jwtUserId,
+            BindingResult bindingResult
+    ) throws ParseException, MethodArgumentNotValidException {
+        if (!isSubCatExist(reqDTO.getSubCategoryId(), jwtUserId)) {
+            bindingResult.rejectValue("subCategoryId", "", "sub-category not found");
+            throw new MethodArgumentNotValidException(null, bindingResult);
         }
-        reqDTO.setUserId(Long.parseLong(request.getParameter("jwt_user_id")));
 
-        CashFlowEntry entry = cashFlowEntryRepository.save(modelMapper.map(reqDTO, CashFlowEntry.class));
-        return modelMapper.map(entry, CashFlowEntryRespDTO.class);
+        CashFlowEntry newEntry = modelMapper.map(reqDTO, CashFlowEntry.class);
+        newEntry.setUser(new User(jwtUserId));
+        newEntry = cashFlowEntryRepository.save(newEntry);
+        entityManager.refresh(newEntry);
+
+        return modelMapper.map(newEntry, CashFlowEntryRespDTO.class);
     }
 
+    @Override
     public CashFlowEntryRespDTO updateEntry(
             updateEntryReqDTO reqDTO,
             Long entryId,
-            Long jwtUserId
-    ) {
+            Long jwtUserId,
+            BindingResult bindingResult
+    ) throws MethodArgumentNotValidException {
         Long newSubCatId = reqDTO.getSubCategoryId();
 
         // check if entry exists
@@ -78,8 +84,8 @@ public class CashFlowEntryServiceImpl implements CashFlowEntryService{
         // if new sub-category is provided, check if it exists
         if (newSubCatId != null) {
             if (!isSubCatExist(newSubCatId, jwtUserId)) {
-                System.out.println("true");
-                throw new ResourceNotFoundException("sub-category not found");
+                bindingResult.rejectValue("subCategoryId", "", "sub-category not found");
+                throw new MethodArgumentNotValidException(null, bindingResult);
             }
             SubCategory sub = new SubCategory();
             sub.setId(newSubCatId);

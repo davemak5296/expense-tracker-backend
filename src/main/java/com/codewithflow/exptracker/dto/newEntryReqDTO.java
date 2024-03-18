@@ -31,10 +31,6 @@ public class newEntryReqDTO {
     @Range(min = 1, message = "Invalid subCategoryId: subCategoryId must be greater than 0")
     private Long subCategoryId;
 
-    @NotNull(message = "Invalid mainCategory: subCategoryUserId cannot be null")
-    @Range(min = 1, message = "Invalid subCategoryId: subCategoryUserId must be greater than 0")
-    private Long subCategoryUserId;
-
     @Range(min = 1, message = "Invalid userId: userId must be greater than 0")
     private Long userId;
 
@@ -43,15 +39,13 @@ public class newEntryReqDTO {
             String description,
             BigDecimal amount,
             LocalDate bookDate,
-            Long subCategoryId,
-            Long subCategoryUserId
+            Long subCategoryId
         ) {
         this.type = type;
         this.description = description;
         this.amount = amount;
         this.bookDate = bookDate;
         this.subCategoryId = subCategoryId;
-        this.subCategoryUserId = subCategoryUserId;
     }
 
     public String getType() {
@@ -92,14 +86,6 @@ public class newEntryReqDTO {
 
     public void setSubCategoryId(Long subCategoryId) {
         this.subCategoryId = subCategoryId;
-    }
-
-    public Long getSubCategoryUserId() {
-        return subCategoryUserId;
-    }
-
-    public void setSubCategoryUserId(Long subCategoryUserId) {
-        this.subCategoryUserId = subCategoryUserId;
     }
 
     public Long getUserId() {

@@ -5,14 +5,12 @@ import io.jsonwebtoken.JwtException;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.MailException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -119,13 +117,6 @@ public class ExceptionHandlers {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public GenericResponse<?,?> mailExceptionHandler(MailException ex, WebRequest request) {
         return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList("Mail error: " + ex.getMessage()), request.getDescription(false)));
-    }
-
-    @ExceptionHandler(SubCategoryIdNotMatchException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public GenericResponse<?,?> subCategoryIdNotMatchExceptionHandler(SubCategoryIdNotMatchException ex, WebRequest request) {
-        return new GenericResponse<>(false, null, new ErrorDetails(new Date(), Collections.singletonList(ex.getMessage()), request.getDescription(false)));
     }
 
     @ExceptionHandler(Exception.class)

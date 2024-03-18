@@ -42,6 +42,10 @@ public class User extends BaseEntity implements Serializable {
     @OneToOne(mappedBy = "user")
     private VerificationToken verificationToken;
 
+    public User () {}
+    public User(Long id) {
+        this.id = id;
+    }
 
     public String getEmail() {
         return email;
