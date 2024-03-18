@@ -27,6 +27,7 @@ target/
 
 ### Properties ###
 src/main/resources/config/*
+!src/main/resources/config/application-example.yml
 !**/src/main/resources/config/*.example
 !**/src/main/resources/config/README.md
 src/test/resources/application.yml

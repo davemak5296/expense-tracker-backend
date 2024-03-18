@@ -1,0 +1,53 @@
+server:
+  port: 8081 # your server port. Remember to sync with exptracker.server.url
+
+spring:
+  profiles:
+    active: dev
+  mail:
+    host: smtp-mail.outlook.com  # your smtp host
+    port: 587 # your smtp port
+    username: # your email
+    password: # your password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/expense-tracker-dev
+    username: postgres # your db username
+    password: root # your db password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create # change to 'update' after first run
+  mvc:
+    log-request-details: true
+  flyway:
+    enabled: false
+
+exptracker:
+  client:
+    url: http://localhost:3001
+  server:
+    url: http://localhost:8081 # your server url. Remember to sync with server.port
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970 # your secret key
+      expiration: 3600000 # 30000 # 30s
+      refresh-token:
+        expiration: 604800000 # 7 days
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
