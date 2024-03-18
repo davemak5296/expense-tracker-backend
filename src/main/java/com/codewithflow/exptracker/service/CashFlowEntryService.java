@@ -22,4 +22,9 @@ public interface CashFlowEntryService {
             Long jwtUserId,
             BindingResult bindingResult
     ) throws MethodArgumentNotValidException;
+
+    CashFlowEntryRespDTO getEntry(
+            Long entryId,
+            Long jwtUserId
+    );
 }

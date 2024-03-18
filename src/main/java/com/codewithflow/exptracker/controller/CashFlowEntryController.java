@@ -53,4 +53,10 @@ public class CashFlowEntryController {
     ) throws MethodArgumentNotValidException {
         return cashFlowEntryService.updateEntry(updatedEntry, entryId, Long.parseLong(request.getParameter("jwt_user_id")), bindingResult);
     }
+
+    @GetMapping("/entry/{entryId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CashFlowEntryRespDTO getCashFlowEntry( @PathVariable Long entryId ) {
+        return cashFlowEntryService.getEntry(entryId, Long.parseLong(request.getParameter("jwt_user_id")));
+   }
 }
