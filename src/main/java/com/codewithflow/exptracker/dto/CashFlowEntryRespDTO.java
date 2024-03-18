@@ -15,6 +15,7 @@ public class CashFlowEntryRespDTO {
     private BigDecimal amount;
     private LocalDate bookDate;
     private String mainCategory;
+    private Long mainCategoryId;
     private Long subCategoryId;
     private String subCategory;
     private Timestamp lastModifiedDate;
@@ -57,6 +58,14 @@ public class CashFlowEntryRespDTO {
 
     public void setBookDate(LocalDate bookDate) {
         this.bookDate = bookDate;
+    }
+
+    public Long getMainCategoryId() {
+        return mainCategoryId;
+    }
+
+    public void setMainCategoryId(Long mainCategoryId) {
+        this.mainCategoryId = mainCategoryId;
     }
 
     public String getMainCategory() {
